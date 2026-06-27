@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goodbye · Esqueleto triste</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0b0e18;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        .scene {
+            position: relative;
+            width: 80%;
+            max-width: 100%;
+            aspect-ratio: 16 / 9;
+            background: linear-gradient(145deg, #121624 0%, #1a1f2b 100%);
+            border-radius: 2rem;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+            border: 1px solid #2e3545;
+        }
+
+        /* === LLUVIA === */
+        .lluvia {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .gota {
+            position: absolute;
+            top: -20px;
+            width: 2px;
+            background: rgba(180, 210, 255, 0.5);
+            border-radius: 0 0 6px 6px;
+            animation: caerLluvia linear infinite;
+        }
+
+        @keyframes caerLluvia {
+            0% {
+                transform: translateY(-20px) translateX(0);
+                opacity: 0.6;
+            }
+            80% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(calc(100vh + 40px)) translateX(-8px);
+                opacity: 0;
+            }
+        }
+
+        /* === TU PNG (esquina inferior izquierda) === */
+        .esqueleto-wrapper {
+            position: absolute;
+            bottom: 8%;
+            left: 4%;
+            z-index: 20;
+            width: 180px;
+            height: 220px;
+            animation: flotarTriste 4s ease-in-out infinite;
+        }
+
+        @keyframes flotarTriste {
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(6px);
+            }
+        }
+
+        .esqueleto-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+            filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.7));
+        }
+
+        /* === TEXTO "goodbye" MÁS PEQUEÑO, ELEGANTE Y BLANCO === */
+        .texto-goodbye {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 30;
+            font-family: 'Playfair Display', 'Georgia', serif;
+            font-size: clamp(2.2rem, 6vw, 4rem);
+            /* Más pequeño */
+            font-weight: 400;
+            font-style: italic;
+            letter-spacing: 6px;
+            text-align: center;
+            color: #ffffff;
+            /* Blanco puro */
+            text-shadow:
+                0 0 30px rgba(255, 255, 255, 0.15),
+                0 4px 30px rgba(0, 0, 0, 0.6),
+                0 0 60px rgba(255, 255, 255, 0.05);
+            animation: palpitar 3s ease-in-out infinite;
+            user-select: none;
+            opacity: 0.92;
+        }
+
+        @keyframes palpitar {
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.92;
+                text-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.02);
+                opacity: 1;
+                text-shadow: 0 0 50px rgba(255, 255, 255, 0.25);
+            }
+        }
+
+        /* === RESPONSIVE === */
+        @media (max-width: 700px) {
+            .esqueleto-wrapper {
+                width: 120px;
+                height: 150px;
+                bottom: 4%;
+                left: 2%;
+            }
+            .texto-goodbye {
+                letter-spacing: 3px;
+                font-size: clamp(1.8rem, 5vw, 2.8rem);
+            }
+        }
+
+        @media (max-width: 450px) {
+            .esqueleto-wrapper {
+                width: 80px;
+                height: 100px;
+                bottom: 2%;
+                left: 1%;
+            }
+            .texto-goodbye {
+                font-size: clamp(1.4rem, 4vw, 2rem);
+                letter-spacing: 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="scene">
+        <!-- LLUVIA -->
+        <div class="lluvia" id="lluvia"></div>
+
+        <!-- === TU PNG === -->
+        <div class="esqueleto-wrapper">
+            <img src="esqueleto.png" alt="Esqueleto triste">
+            <!-- 👆 Cambia la ruta si es necesario -->
+        </div>
+
+        <!-- TEXTO "goodbye" -->
+        <div class="texto-goodbye">missing ur tits :(</div>
+    </div>
+
+    <script>
+        (function() {
+            const lluviaContainer = document.getElementById('lluvia');
+            const CANTIDAD_GOTAS = 140;
+
+            function crearGotas() {
+                for (let i = 0; i < CANTIDAD_GOTAS; i++) {
+                    const gota = document.createElement('div');
+                    gota.classList.add('gota');
+
+                    const left = Math.random() * 100;
+                    gota.style.left = left + '%';
+
+                    const startDelay = Math.random() * 4;
+                    gota.style.animationDelay = startDelay + 's';
+
+                    const duracion = 0.8 + Math.random() * 1.4;
+                    gota.style.animationDuration = duracion + 's';
+
+                    const altura = 12 + Math.random() * 22;
+                    gota.style.height = altura + 'px';
+                    gota.style.width = (1.5 + Math.random() * 2) + 'px';
+
+                    gota.style.opacity = 0.3 + Math.random() * 0.5;
+
+                    lluviaContainer.appendChild(gota);
+                }
+            }
+
+            crearGotas();
+        })();
+    </script>
+</body>
+</html>
